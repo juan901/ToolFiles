@@ -1,0 +1,73 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: ------------------------------------------------------
+:: Script: Selector 
+:: Copyright (c) 2025 JCRH . Todos los derechos reservados.
+:: Autor: Juan Carlos Raygoza Hernandez 
+:: Github: juan901
+:: Descripción: Por medio de una lista externa con numero en un archivo txt selecciona dichos archivos y los trae a una sola carpeta como seleccion 
+:: ------------------------------------------------------
+
+:: ------------------------------------------------------
+:: Script: crear_carpetasV2.bat
+:: Copyright (c) 2025 JCRH. Todos los derechos reservados.
+:: Autor: Juan Carlos Raygoza Hernández
+:: Github: juan901
+:: Descripción: Using an external list with numbers in a txt file,
+::              selects those files and copies them into a single folder called "selection".
+:: ------------------------------------------------------
+
+
+:: ------------------------------------------------------
+::DESCRIPCION 
+::Este script lee un archivo externo llamado lista.txt, que contiene números enlistados uno por línea sin comas ni separadores, y utiliza esos números para seleccionar archivos específicos desde una carpeta llamada ORIGEN. 
+::Los archivos seleccionados se copian a una carpeta llamada seleccionada, facilitando así la gestión y organización de archivos según una lista predefinida.
+:: ------------------------------------------------------
+
+:: Carpetas
+set "origen=origen"
+set "destino=seleccionadas"
+
+:: Crear carpeta destino si no existe
+if not exist "%destino%" mkdir "%destino%"
+
+:: Contadores
+set /a encontrados=0
+set /a no_encontrados=0
+
+echo ----------------------------------------
+echo Iniciando copia de archivos desde lista.txt
+echo ----------------------------------------
+
+:: ------------------------------------------------------
+:: Modifica el nombre melissa por la extension o estructura de archivos. 
+:: ------------------------------------------------------
+
+
+:: Leer uno por uno cada número de lista.txt
+for /f "usebackq delims=" %%N in ("lista.txt") do (
+    set "archivo_encontrado="
+    for %%F in ("%origen%\melissa-%%N.*") do (
+        if exist "%%F" (
+            echo Copiando archivo: %%~nxF
+            copy "%%F" "%destino%\" >nul
+            set "archivo_encontrado=1"
+        )
+    )
+
+    if not defined archivo_encontrado (
+        echo No encontrado: melissa-%%N.*
+        set /a no_encontrados+=1
+    ) else (
+        set /a encontrados+=1
+    )
+)
+
+echo ----------------------------------------
+echo Proceso finalizado.
+echo Total encontrados: %encontrados%
+echo Total no encontrados: %no_encontrados%
+echo ----------------------------------------
+
+pause
